@@ -1,14 +1,12 @@
-import { getNavHelper } from "internal-nav-helper";
-// import { useConnect } from "redux-bundler-hook";
+import NavHelper from "./utils/nav-helper";
 import CustomAppShell from "./app-shell/app-shell";
 import { useState } from "react";
 import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
+import useRouter from "./hooks/useRouter";
+import { AuthProvider } from "./utils/auth";
 
 export default function App() {
-  // const { route: Route, doUpdateUrl } = useConnect(
-  //   "selectRoute",
-  //   "doUpdateUrl"
-  // );
+  const [Route, routeParams] = useRouter();
   const [colorScheme, setColorScheme] = useState("light");
   const toggleColorScheme = (value) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
@@ -40,13 +38,13 @@ export default function App() {
         colorScheme={colorScheme}
         toggleColorScheme={toggleColorScheme}
       >
-        <div
-          onClick={getNavHelper((url) => {
-            console.log(url, "implement nav helper here");
-          })}
-        >
-          <CustomAppShell>{/* <Route /> */}</CustomAppShell>
-        </div>
+        <AuthProvider>
+          <NavHelper>
+            <CustomAppShell>
+              <Route routeParams={routeParams} />
+            </CustomAppShell>
+          </NavHelper>
+        </AuthProvider>
       </ColorSchemeProvider>
     </MantineProvider>
   );

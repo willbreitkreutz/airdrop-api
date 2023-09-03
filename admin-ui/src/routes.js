@@ -4,7 +4,6 @@ import Games from "./app-pages/games/games";
 import Users from "./app-pages/users/users";
 
 const origin = window.location.origin;
-console.log("origin", origin);
 
 export default featherRouteMatcher({
   [`${origin}/`]: Home,

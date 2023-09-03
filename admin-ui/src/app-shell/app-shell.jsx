@@ -7,60 +7,44 @@ import {
   Group,
   useMantineColorScheme,
 } from "@mantine/core";
-import {
-  IconSun,
-  IconMoonStars,
-  IconLogin,
-  IconLogout,
-} from "@tabler/icons-react";
+import { IconSun, IconMoonStars, IconLogout } from "@tabler/icons-react";
 import SidebarLinks from "./_sidebar-links";
 import Logo from "./_logo";
-// import { useConnect } from "redux-bundler-hook";
+import { useAuth } from "../utils/auth";
 
 export default function CustomAppShell({ children }) {
-  //   const { authIsLoggedIn, routeInfo, doAuthLogin, doAuthLogout } = useConnect(
-  //     "selectAuthIsLoggedIn",
-  //     "selectRouteInfo",
-  //     "doAuthLogin",
-  //     "doAuthLogout"
-  //   );
+  const { isLoggedIn, logout } = useAuth();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   return (
     <AppShell
       padding="md"
       fixed={true}
       navbar={
-        <Navbar width={{ base: 300 }} p="xs">
-          <Navbar.Section grow mt="xs">
-            <SidebarLinks />
-          </Navbar.Section>
-          {/* <Navbar.Section>{authIsLoggedIn && <User />}</Navbar.Section> */}
-        </Navbar>
+        <>
+          {isLoggedIn ? (
+            <Navbar width={{ base: 300 }} p="xs">
+              <Navbar.Section grow mt="xs">
+                <SidebarLinks />
+              </Navbar.Section>
+            </Navbar>
+          ) : null}
+        </>
       }
       header={
         <Header height={60}>
           <Group sx={{ height: "100%" }} px={20} position="apart">
             <Logo colorScheme={colorScheme} />
             <Group>
-              {false ? (
+              {isLoggedIn ? (
                 <Button
+                  onClick={logout}
                   size="xs"
                   leftIcon={<IconLogout size="1rem" />}
                   variant="default"
                 >
                   Logout
                 </Button>
-              ) : (
-                <Button
-                  size="xs"
-                  color="bright-pink"
-                  leftIcon={<IconLogin size="1rem" />}
-                  variant="filled"
-                >
-                  Login
-                </Button>
-              )}
-
+              ) : null}
               <ActionIcon
                 size="md"
                 variant="default"

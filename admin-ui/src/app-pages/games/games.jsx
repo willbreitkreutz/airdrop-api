@@ -1,3 +1,6 @@
+import { useAuth } from "../../utils/auth";
+
 export default function Games() {
-  return <div>Games</div>;
+  const { token } = useAuth();
+  return <div>{token}</div>;
 }
