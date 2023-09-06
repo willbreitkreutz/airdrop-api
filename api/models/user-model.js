@@ -1,4 +1,4 @@
-import { get, run } from "../utils/db.js";
+import { get, run, all } from "../utils/db.js";
 import { getGameIdFromJoinCode } from "./game-model.js";
 import { getUserLeaderboardInfo } from "./leaderboard-model.js";
 
@@ -58,10 +58,10 @@ function setUserLastLocation(userId, location) {
   ]);
 }
 
-function updateUserRoles(user, roles) {
+function updateUserRoles(id, roles) {
   return run(
     `UPDATE users SET roles = ? WHERE id = ? returning id, username, roles`,
-    [roles, user.id]
+    [roles, id]
   );
 }
 

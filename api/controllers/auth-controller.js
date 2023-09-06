@@ -50,9 +50,8 @@ async function selectOrCreateUser(req, res, next) {
 }
 
 async function updateUserRoles(req, res) {
-  const { user } = req;
-  const { roles } = req.body;
-  const updatedUser = await userModel.updateUserRoles(user, roles);
+  const { id, roles } = req.body;
+  const updatedUser = await userModel.updateUserRoles(id, roles);
   res.status(200).json(updatedUser);
 }
 
@@ -64,8 +63,8 @@ function issueToken(req, res) {
   });
 }
 
-function listUsers(req, res) {
-  const users = userModel.listUsers();
+async function listUsers(req, res) {
+  const users = await userModel.listUsers();
   res.status(200).json(users);
 }
 

@@ -2,6 +2,7 @@ import NavHelper from "./utils/nav-helper";
 import CustomAppShell from "./app-shell/app-shell";
 import { useState } from "react";
 import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
+import { DatesProvider } from "@mantine/dates";
 import useRouter from "./hooks/useRouter";
 import { AuthProvider } from "./utils/auth";
 
@@ -38,13 +39,15 @@ export default function App() {
         colorScheme={colorScheme}
         toggleColorScheme={toggleColorScheme}
       >
-        <AuthProvider>
-          <NavHelper>
-            <CustomAppShell>
-              <Route routeParams={routeParams} />
-            </CustomAppShell>
-          </NavHelper>
-        </AuthProvider>
+        <DatesProvider>
+          <AuthProvider>
+            <NavHelper>
+              <CustomAppShell>
+                <Route routeParams={routeParams} />
+              </CustomAppShell>
+            </NavHelper>
+          </AuthProvider>
+        </DatesProvider>
       </ColorSchemeProvider>
     </MantineProvider>
   );

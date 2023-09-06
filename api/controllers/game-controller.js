@@ -73,4 +73,22 @@ async function listPrizes(req, res) {
   res.json(prizes);
 }
 
-export { claimPrize, createGame, getLeaderboard, listPrizes };
+async function getGameDetails(req, res) {
+  const { joinCode } = req.params;
+  const game = await gameModel.getGameDetails(joinCode);
+  res.json(game);
+}
+
+async function listGames(req, res) {
+  const games = await gameModel.listGames();
+  res.json(games);
+}
+
+export {
+  claimPrize,
+  createGame,
+  getGameDetails,
+  getLeaderboard,
+  listPrizes,
+  listGames,
+};

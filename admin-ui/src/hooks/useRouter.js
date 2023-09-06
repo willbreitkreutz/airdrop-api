@@ -6,7 +6,6 @@ export default function useRouter() {
   const [route, setRoute] = useState(routes(window.location.href));
 
   useEffect(() => {
-    console.log("adding event listener for popstate");
     window.addEventListener("popstate", handleRouteChange);
     return () => {
       window.removeEventListener("popstate", handleRouteChange);

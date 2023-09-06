@@ -32,9 +32,10 @@ function AuthProvider({ children }) {
   }
 
   const isLoggedIn = token !== "";
+  const roles = isLoggedIn ? atob(token.split(".")[1]).roles : [];
 
   return (
-    <AuthContext.Provider value={{ login, logout, token, isLoggedIn }}>
+    <AuthContext.Provider value={{ login, logout, token, isLoggedIn, roles }}>
       {children}
     </AuthContext.Provider>
   );

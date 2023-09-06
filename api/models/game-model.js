@@ -1,4 +1,4 @@
-import db, { get, run } from "../utils/db.js";
+import { get, run, all } from "../utils/db.js";
 import { bbox, booleanPointInPolygon, randomPoint } from "@turf/turf";
 import { broadcast } from "../utils/soc.js";
 
@@ -90,8 +90,16 @@ function newGame(props) {
   return g.init();
 }
 
+function getGameDetails(joinCode) {
+  return get(`SELECT * FROM games WHERE join_code = ?`, joinCode);
+}
+
+function listGames() {
+  return all(`SELECT * FROM games`);
+}
+
 function getGameIdFromJoinCode(joinCode) {
   return get(`SELECT id FROM games WHERE join_code = ?`, joinCode);
 }
 
-export { getGameIdFromJoinCode, newGame };
+export { getGameIdFromJoinCode, getGameDetails, newGame, listGames };
