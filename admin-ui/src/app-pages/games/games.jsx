@@ -7,6 +7,8 @@ import {
   Stack,
   ScrollArea,
   ActionIcon,
+  Text,
+  ThemeIcon,
 } from "@mantine/core";
 import {
   IconClockCancel,
@@ -14,6 +16,8 @@ import {
   IconClockPlus,
   IconMapPinPlus,
 } from "@tabler/icons-react";
+import { format } from "date-fns";
+import { doUpdateUrl } from "../../utils/nav-helper";
 const apiRoot = __API_ROOT__;
 
 function GameListItem({ game }) {
@@ -28,25 +32,52 @@ function GameListItem({ game }) {
     status = "ended";
   }
 
+  const getIcon = (status) => {
+    switch (status) {
+      case "active":
+        return (
+          <ThemeIcon variant="light" color="green">
+            <IconClock title="active game" />
+          </ThemeIcon>
+        );
+      case "upcoming":
+        return (
+          <ThemeIcon variant="light" color="pink">
+            <IconClockPlus title="upcoming game" />
+          </ThemeIcon>
+        );
+      case "ended":
+        return (
+          <ThemeIcon variant="light" color="gray">
+            {" "}
+            <IconClockCancel title="ended game" />
+          </ThemeIcon>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <Paper shadow="xs" p="xs">
-      <Grid justify="space-around" align="center">
-        <Grid.Col span={2}>
-          {status === "active" ? <IconClock title="active game" /> : null}
-          {status === "upcoming" ? (
-            <IconClockPlus title="upcoming game" />
-          ) : null}
-          {status === "ended" ? <IconClockCancel title="ended game" /> : null}
+      <Grid justify="space-between" align="center">
+        <Grid.Col span={6}>
+          <Group>
+            {getIcon(status)}
+            <a href={`/games/${game.join_code}`}>
+              <Text fz="md">{game.name}</Text>
+            </a>
+          </Group>
         </Grid.Col>
-        <Grid.Col span={2}>
-          <p>{new Date(game.start_time).toString()}</p>
-          <p>{new Date(game.end_time).toString()}</p>
-        </Grid.Col>
-        <Grid.Col span={2}></Grid.Col>
-        <Grid.Col span={2}>
-          <a href={`/games/${game.join_code}`}>
-            <h3>{game.name}</h3>
-          </a>
+        <Grid.Col span={4}>
+          <Text fz="xs">
+            <b>{`Start: `}</b>
+            {format(new Date(game.start_time), "MM-dd-yyyy h:mm a")}
+          </Text>
+          <Text fz="xs">
+            <b>{`End: `}</b>
+            {format(new Date(game.end_time), "MM-dd-yyyy h:mm a")}
+          </Text>
         </Grid.Col>
       </Grid>
     </Paper>
@@ -64,7 +95,13 @@ export default function Games() {
     <div>
       <Group position="apart">
         <h1>Games</h1>
-        <ActionIcon variant="filled" color="primary">
+        <ActionIcon
+          onClick={() => {
+            doUpdateUrl("/games/new");
+          }}
+          variant="filled"
+          color="primary"
+        >
           <IconMapPinPlus />
         </ActionIcon>
       </Group>

@@ -9,26 +9,35 @@ import {
 } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 
-export default function GameForm({ game = {} }) {
+export default function GameForm({ game = {}, onSave, onCancel }) {
+  console.log(game);
   const form = useForm({
     initialValues: {
-      id: game.id || null,
-      joinCode: game.join_code || null,
-      name: game.name || null,
-      geom: game.geometry || null,
-      startTime: game.start_time ? new Date(game.start_time) : null,
-      endTime: game.end_time ? new Date(game.end_time) : null,
+      id: game.id || "",
+      joinCode: game.join_code || "",
+      name: game.name || "",
+      geom: game.geometry || "",
+      startTime: game.start_time ? new Date(game.start_time) : "",
+      endTime: game.end_time ? new Date(game.end_time) : "",
       prizeCount: game.prize_count || 100,
       prizeMaxValue: game.prize_max_value || 100,
       prizeDuration: game.prize_duration || 100,
     },
+    transformValues: (values) => ({
+      ...values,
+      ...{
+        startTime: values.startTime.toISOString(),
+        endTime: values.endTime.toISOString(),
+        geom: JSON.parse(values.geom),
+      },
+    }),
   });
   return (
     <Box maw={320} mx="auto">
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          login(form.values);
+          onSave(form.getTransformedValues());
         }}
       >
         <TextInput
@@ -55,6 +64,8 @@ export default function GameForm({ game = {} }) {
           mt="md"
           label="Geom"
           placeholder="Geom"
+          validationError="Invalid JSON"
+          formatOnBlur
           disabled={false}
           {...form.getInputProps("geom")}
         />
@@ -95,7 +106,7 @@ export default function GameForm({ game = {} }) {
         />
         <Group position="center" mt="xl">
           <Button type="submit">Save</Button>
-          <Button>Cancel</Button>
+          <Button onClick={onCancel}>Cancel</Button>
         </Group>
       </form>
     </Box>

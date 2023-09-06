@@ -22,8 +22,8 @@ class Game {
           const g = await get(`SELECT * FROM games WHERE id = ?`, [this.id]);
           this.joinCode = row.join_code;
           this.name = row.name;
-          this.geom = row.geometry;
-          this.bbox = row.bbox;
+          this.geom = JSON.parse(row.geometry);
+          this.bbox = JSON.parse(row.bbox);
           this.startTime = row.start_time;
           this.endTime = row.end_time;
           this.prizeCount = row.prize_count;
@@ -36,8 +36,8 @@ class Game {
             [
               this.joinCode,
               this.name,
-              this.geom,
-              this.bbox,
+              JSON.stringify(this.geom),
+              JSON.stringify(this.bbox),
               this.startTime,
               this.endTime,
               this.prizeCount,

@@ -20,3 +20,5 @@ export default function NavHelper({ children }) {
   }
   return <div onClick={getNavHelper(doUpdateUrl)}>{children}</div>;
 }
+
+export { doUpdateUrl };

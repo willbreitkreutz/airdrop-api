@@ -19,7 +19,7 @@ export function useRestApi({
   const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
 
   useEffect(() => {
-    const cacheKey = hash(getUrl);
+    const cacheKey = hash(getUrl || new Date());
     const cachedData = store.getItem(`${cacheKey}-items`);
     const cachedAt = store.getItem(`${cacheKey}-at`);
     if (cachedData) {
@@ -56,6 +56,10 @@ export function useRestApi({
 
   function get() {
     setBusy(true);
+    if (!getUrl) {
+      setBusy(false);
+      return;
+    }
     fetch(getUrl, {
       method: "GET",
       headers: {
@@ -75,6 +79,7 @@ export function useRestApi({
         if (!Array.isArray(data)) {
           data = [data];
         }
+        console.log(data);
         setItems(data);
         setAt(new Date());
         setBusy(false);
@@ -84,7 +89,7 @@ export function useRestApi({
       });
   }
 
-  function post(item) {
+  function post(item, callback) {
     fetch(postUrl, {
       method: "POST",
       headers: {
@@ -98,16 +103,23 @@ export function useRestApi({
     })
       .then((response) => {
         if (response.ok) {
-          return setAt(null);
+          setAt(null);
+          return response.json();
         }
         throw new Error("Network response was not ok.");
+      })
+      .then((json) => {
+        console.log("json", json);
+        if (callback && typeof callback === "function") {
+          callback(json);
+        }
       })
       .catch((error) => {
         setError(error);
       });
   }
 
-  function put(item) {
+  function put(item, callback) {
     fetch(putUrl, {
       method: "PUT",
       headers: {
@@ -125,12 +137,17 @@ export function useRestApi({
         }
         throw new Error("Network response was not ok.");
       })
+      .then(() => {
+        if (callback && typeof callback === "function") {
+          callback();
+        }
+      })
       .catch((error) => {
         setError(error);
       });
   }
 
-  function del(item) {
+  function del(item, callback) {
     fetch(deleteUrl, {
       method: "DELETE",
       headers: {
@@ -148,21 +165,26 @@ export function useRestApi({
         }
         throw new Error("Network response was not ok.");
       })
+      .then(() => {
+        if (callback && typeof callback === "function") {
+          callback();
+        }
+      })
       .catch((error) => {
         setError(error);
       });
   }
 
-  function save(item) {
+  function save(item, callback) {
     if (item.id) {
-      put(item);
+      put(item, callback);
     } else {
-      post(item);
+      post(item, callback);
     }
   }
 
-  function remove(item) {
-    del(item);
+  function remove(item, callback) {
+    del(item, callback);
   }
 
   return { items, save, remove, busy, error };

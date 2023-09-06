@@ -11,7 +11,7 @@ import {
 } from "../controllers/game-controller.js";
 
 router.get("/", authenticate("ADMIN"), listGames);
-router.post("/new", authenticate("ADMIN"), createGame);
+router.post("/", authenticate("ADMIN"), createGame);
 router.get("/:joinCode/details", authenticate("PLAYER"), getGameDetails);
 router.get("/:joinCode/leaderboard", authenticate("PLAYER"), getLeaderboard);
 router.get("/:joinCode/prizes", authenticate("PLAYER"), listPrizes);
