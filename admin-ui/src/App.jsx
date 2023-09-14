@@ -5,6 +5,7 @@ import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
 import { DatesProvider } from "@mantine/dates";
 import useRouter from "./hooks/useRouter";
 import { AuthProvider } from "./utils/auth";
+import "ol/ol.css";
 
 export default function App() {
   const [Route, routeParams] = useRouter();

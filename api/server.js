@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { connect } from "./utils/soc.js";
+import { connectSocketServer } from "./utils/soc.js";
 import authRoutes from "./routes/auth-routes.js";
 import gameRoutes from "./routes/game-routes.js";
 
@@ -11,6 +11,11 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const env = process.env;
+
+app.use((req, _, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
 app.use("/auth", authRoutes);
 app.use("/games", gameRoutes);
@@ -26,7 +31,7 @@ function startup() {
     });
   });
 
-  connect(server);
+  connectSocketServer(server);
 
   console.log(`Airdrop-API listening on ${env.HTTP_PORT}`);
 }

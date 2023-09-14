@@ -12,6 +12,16 @@ db.serialize(() => {
       roles TEXT, 
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`
   );
+  // connections table
+  db.run(
+    `CREATE TABLE IF NOT EXISTS connections (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      ws_token TEXT,
+      channel TEXT,
+      connected BOOLEAN,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`
+  );
   // games table
   db.run(
     `CREATE TABLE IF NOT EXISTS games (

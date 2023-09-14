@@ -8,8 +8,7 @@ function doUpdateUrl(url, state = {}) {
 }
 
 export default function NavHelper({ children }) {
-  const { isLoggedIn, token } = useAuth();
-  console.log(isLoggedIn, token);
+  const { isLoggedIn } = useAuth();
   if (!isLoggedIn) {
     if (window.location.pathname !== "/") {
       // weird race condition between this call and the router setting up it's listener

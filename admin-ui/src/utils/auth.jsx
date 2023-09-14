@@ -3,12 +3,25 @@ const apiRoot = __API_ROOT__;
 const cacheKey = "kwnvowehn-token";
 const store = window.localStorage;
 
-function setTokenToCache(token) {
+function setTokenToCache(token, callback) {
   store.setItem(cacheKey, token);
+  callback && typeof callback === "function" && callback();
 }
 
 function getTokenFromCache() {
   return store.getItem(cacheKey);
+}
+
+function isTokenExpired(token) {
+  const decodedToken = atob(token.split(".")[1]);
+  const expiresAt = JSON.parse(decodedToken).exp;
+  return Date.now() >= expiresAt * 1000;
+}
+
+function getRolesFromToken(token) {
+  const decodedToken = atob(token.split(".")[1]);
+  const roles = JSON.parse(decodedToken).roles;
+  return roles;
 }
 
 const defaultState = {
@@ -27,12 +40,23 @@ function AuthProvider({ children }) {
   }
 
   function logout() {
-    setToken("");
-    setTokenToCache("");
+    setTokenToCache("", () => {
+      setToken("");
+    });
   }
 
   const isLoggedIn = token !== "";
-  const roles = isLoggedIn ? atob(token.split(".")[1]).roles : [];
+
+  if (isLoggedIn && isTokenExpired(token)) {
+    logout();
+  }
+
+  const roles = isLoggedIn ? getRolesFromToken(token) : [];
+  console.log(roles);
+
+  if (isLoggedIn && !roles.includes("ADMIN")) {
+    logout();
+  }
 
   return (
     <AuthContext.Provider value={{ login, logout, token, isLoggedIn, roles }}>

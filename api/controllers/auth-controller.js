@@ -1,5 +1,6 @@
 import { compare, hash, tokenForUser, verify } from "../utils/auth.js";
 import * as userModel from "../models/user-model.js";
+import * as connectionModel from "../models/connection-model.js";
 
 function authenticate(role) {
   return function (req, _, next) {
@@ -63,6 +64,34 @@ function issueToken(req, res) {
   });
 }
 
+async function issueWsToken(req, res) {
+  const { user } = req;
+  const { joinCode } = req.query;
+  const str = `${user.sub}-${joinCode}`;
+  console.log(str);
+  const wsToken = await hash(str);
+  await connectionModel.createConnection(user.sub, joinCode, wsToken);
+  res.status(200).json({ wsToken, str });
+}
+
+async function verifyWsToken(req, res, next) {
+  const { channel, wsToken } = req.query;
+  const connection = await connectionModel.getConnection(wsToken);
+  const verifyString = `${connection?.user_id}-${channel}`;
+  const match = await compare(verifyString, wsToken);
+  if (match) {
+    if (connection && !connection.connected) {
+      await connectionModel.updateConnection(connection.id, true);
+      req.user = await userModel.getUserById(connection.user_id);
+      next();
+    } else {
+      res.status(406).json({ verified: false, message: "Already connected" });
+    }
+  } else {
+    res.status(401).json({ verified: false });
+  }
+}
+
 async function listUsers(req, res) {
   const users = await userModel.listUsers();
   res.status(200).json(users);
@@ -70,8 +99,10 @@ async function listUsers(req, res) {
 
 export {
   authenticate,
-  selectOrCreateUser,
   issueToken,
-  updateUserRoles,
+  issueWsToken,
   listUsers,
+  selectOrCreateUser,
+  updateUserRoles,
+  verifyWsToken,
 };

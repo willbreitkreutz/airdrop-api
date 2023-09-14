@@ -23,6 +23,10 @@ function getUserByUsername(username) {
   );
 }
 
+function getUserById(id) {
+  return get(`SELECT id, username, roles FROM users WHERE id = ?`, [id]);
+}
+
 function getUserLastLocation(userId) {
   return get(`SELECT last_location FROM games_users WHERE user_id = ?`, userId);
 }
@@ -68,6 +72,7 @@ function updateUserRoles(id, roles) {
 export {
   addUserToGame,
   createUser,
+  getUserById,
   getUserByUsername,
   getUserLastLocation,
   joinGame,

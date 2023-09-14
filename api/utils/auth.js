@@ -3,13 +3,13 @@ import jwt from "jsonwebtoken";
 
 const AUTH_SECRET = process.env.AUTH_SECRET;
 
-async function hash(password) {
-  const hash = await bcrypt.hash(password, 12);
+async function hash(data) {
+  const hash = await bcrypt.hash(data, 12);
   return hash;
 }
 
-async function compare(password, hash) {
-  return await bcrypt.compare(password, hash);
+async function compare(data, hash) {
+  return await bcrypt.compare(data, hash);
 }
 
 function _sign(payload, cb) {

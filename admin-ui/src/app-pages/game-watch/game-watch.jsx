@@ -1,13 +1,13 @@
-import GameForm from "../games/_game-form";
 import { useRestApi } from "../../hooks/useRestApi";
 import { useAuth } from "../../utils/auth";
 import { doUpdateUrl } from "../../utils/nav-helper";
 import { ActionIcon, Group } from "@mantine/core";
-import { IconMap2 } from "@tabler/icons-react";
+import { IconPacman } from "@tabler/icons-react";
+import GameMap from "./_game-map";
 
 const apiRoot = __API_ROOT__;
 
-export default function GameDetail({ routeParams }) {
+export default function GameWatch({ routeParams }) {
   const { token } = useAuth();
   const { items, error, loading } = useRestApi({
     getUrl: `${apiRoot}/games/${routeParams.joinCode}/details`,
@@ -19,12 +19,12 @@ export default function GameDetail({ routeParams }) {
         <h1>Game Detail</h1>
         <ActionIcon
           onClick={() => {
-            doUpdateUrl(`/games/${items[0].join_code}/watch`);
+            doUpdateUrl(`/games/${items[0].join_code}`);
           }}
           variant="filled"
-          color="blue"
+          color="green"
         >
-          <IconMap2 />
+          <IconPacman />
         </ActionIcon>
       </Group>
       {loading ? (
@@ -32,7 +32,7 @@ export default function GameDetail({ routeParams }) {
       ) : error ? (
         <p>Error: {error.message}</p>
       ) : items && items[0] ? (
-        <GameForm game={items[0]} />
+        <GameMap game={items[0]} />
       ) : null}
     </div>
   );

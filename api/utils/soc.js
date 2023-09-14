@@ -1,7 +1,8 @@
 import { WebSocketServer } from "ws";
-import { authenticate } from "../controllers/auth-controller.js";
+import { authenticate, verifyWsToken } from "../controllers/auth-controller.js";
 import { userMsgHandler } from "../socket-msg-handler/socket-msg-handler.js";
 import { joinGame } from "../models/user-model.js";
+import { deleteConnection } from "../models/connection-model.js";
 
 function getChannelParam(req) {
   const url = new URL(req.url, "http://localhost");
@@ -27,6 +28,8 @@ async function onConnection(ws, req, user) {
     userMsgHandler(channel, data, user, ws);
   });
   ws.on("close", function close() {
+    deleteConnection(user.id, channel);
+    channels[channel] = channels[channel].filter((w) => w !== ws);
     console.log(`User ${user.username} disconnected`);
   });
   if (channel) {
@@ -54,9 +57,13 @@ async function onConnection(ws, req, user) {
 
 function onUpgrade(req, socket, head) {
   socket.on("error", onSocketError);
-
-  const authHandler = authenticate("PLAYER");
-  authHandler(req, {}, function (err) {
+  const url = new URL(req.url, "http://localhost");
+  const query = {
+    channel: url.searchParams.get("channel"),
+    wsToken: url.searchParams.get("wsToken"),
+  };
+  req.query = query;
+  verifyWsToken(req, {}, function (err) {
     if (err) {
       onSocketError(err);
       socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
@@ -72,7 +79,7 @@ function onUpgrade(req, socket, head) {
   });
 }
 
-function connect(server) {
+function connectSocketServer(server) {
   socketServer.on("connection", onConnection);
   server.on("upgrade", onUpgrade);
 }
@@ -93,4 +100,13 @@ function broadcastExceptSender(channel, message, sender) {
   }
 }
 
-export { connect, broadcast, broadcastExceptSender };
+function returnToSender(ws, message) {
+  ws.send(message);
+}
+
+export {
+  connectSocketServer,
+  broadcast,
+  broadcastExceptSender,
+  returnToSender,
+};
