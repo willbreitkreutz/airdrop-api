@@ -3,7 +3,7 @@ import { useAuth } from "../utils/auth";
 
 const apiRoot = __API_ROOT__;
 
-export function useGameConnection(game) {
+export function useGameConnection(game, onPrize) {
   const { token } = useAuth();
   const [wsToken, setWsToken] = useState(null);
   const [socket, setSocket] = useState(null);
@@ -46,6 +46,19 @@ export function useGameConnection(game) {
     });
     s.addEventListener("message", (event) => {
       console.log("Message from server ", event.data);
+      try {
+        const dataObj = JSON.parse(event.data);
+        const { type, payload } = dataObj;
+        switch (type) {
+          case "PRIZE_POINT":
+            if (onPrize && typeof onPrize === "function") onPrize(payload);
+            break;
+          default:
+            console.log("Unknown message type: ", event.data.type);
+        }
+      } catch (e) {
+        console.error(e);
+      }
     });
     setSocket(s);
   }, [wsToken]);
