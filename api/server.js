@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { connectSocketServer } from "./utils/soc.js";
+import { startActiveGames } from "./utils/gametime.js";
 import authRoutes from "./routes/auth-routes.js";
 import gameRoutes from "./routes/game-routes.js";
 
@@ -32,6 +33,7 @@ function startup() {
   });
 
   connectSocketServer(server);
+  startActiveGames();
 
   console.log(`Airdrop-API listening on ${env.HTTP_PORT}`);
 }

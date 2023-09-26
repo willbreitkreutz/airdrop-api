@@ -50,12 +50,46 @@ async function claimPrize(req, res) {
 }
 
 async function createGame(req, res) {
-  const { name, startTime, endTime, prizeCount, geom } = req.body;
-  const game = await gameModel.newGame({
+  const {
     name,
     startTime,
     endTime,
     prizeCount,
+    prizeMaxValue,
+    prizeDuration,
+    geom,
+  } = req.body;
+  const game = gameModel.createGame({
+    name,
+    startTime,
+    endTime,
+    prizeCount,
+    prizeMaxValue,
+    prizeDuration,
+    geom,
+  });
+  res.json(game);
+}
+
+async function updateGame(req, res) {
+  const {
+    id,
+    name,
+    startTime,
+    endTime,
+    prizeCount,
+    prizeMaxValue,
+    prizeDuration,
+    geom,
+  } = req.body;
+  const game = gameModel.updateGame({
+    id,
+    name,
+    startTime,
+    endTime,
+    prizeCount,
+    prizeMaxValue,
+    prizeDuration,
     geom,
   });
   res.json(game);
@@ -67,9 +101,9 @@ async function getLeaderboard(req, res) {
   res.json(leaderboard);
 }
 
-async function listPrizes(req, res) {
+async function getActivePrizes(req, res) {
   const { joinCode } = req.params;
-  const prizes = await prizeModel.listPrizes(joinCode);
+  const prizes = await prizeModel.getActivePrizes(joinCode);
   res.json(prizes);
 }
 
@@ -89,6 +123,7 @@ export {
   createGame,
   getGameDetails,
   getLeaderboard,
-  listPrizes,
+  getActivePrizes,
   listGames,
+  updateGame,
 };

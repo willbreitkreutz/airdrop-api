@@ -3,9 +3,10 @@ import { useRestApi } from "../../hooks/useRestApi";
 import { useAuth } from "../../utils/auth";
 import { doUpdateUrl } from "../../utils/nav-helper";
 
+// eslint-disable-next-line no-undef
 const apiRoot = __API_ROOT__;
 
-export default function NewGame({}) {
+export default function NewGame() {
   const { token } = useAuth();
   const { save } = useRestApi({
     postUrl: `${apiRoot}/games`,

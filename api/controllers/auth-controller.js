@@ -42,6 +42,12 @@ async function selectOrCreateUser(req, res, next) {
       res.status(401).send("Login failed");
     }
   } else {
+    if (!password || !username) {
+      res.status(400).send("Username and password required");
+    }
+    if (password.length < 8) {
+      res.status(400).send("Password must be at least 8 characters");
+    }
     const hashed = await hash(password);
     const newUser = await userModel.createUser(username, hashed);
     delete newUser.password;

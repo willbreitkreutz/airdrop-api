@@ -3,7 +3,7 @@ import { Box, Button, Group, TextInput } from "@mantine/core";
 import { useAuth } from "../../utils/auth";
 
 export default function LoginForm() {
-  const { login } = useAuth();
+  const { login, err } = useAuth();
   const form = useForm({
     initialValues: {
       username: "",
@@ -29,6 +29,7 @@ export default function LoginForm() {
           type="password"
           placeholder="Password"
           {...form.getInputProps("password")}
+          error={err}
         />
 
         <Group position="center" mt="xl">

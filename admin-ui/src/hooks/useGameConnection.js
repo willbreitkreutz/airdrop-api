@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 import { useState, useEffect } from "react";
 import { useAuth } from "../utils/auth";
 
@@ -32,6 +34,7 @@ export function useGameConnection(game, onPrize) {
       .catch((error) => {
         console.error(error);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -42,7 +45,6 @@ export function useGameConnection(game, onPrize) {
     );
     s.addEventListener("open", (_) => {
       console.log("Connected to server");
-      s.send(JSON.stringify({ type: "BROADCAST", payload: "Hello Server!" }));
     });
     s.addEventListener("message", (event) => {
       console.log("Message from server ", event.data);
@@ -61,6 +63,7 @@ export function useGameConnection(game, onPrize) {
       }
     });
     setSocket(s);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wsToken]);
 
   return { boundary, players, prizes, leaderboard };

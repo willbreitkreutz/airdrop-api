@@ -5,12 +5,14 @@ import { doUpdateUrl } from "../../utils/nav-helper";
 import { ActionIcon, Group } from "@mantine/core";
 import { IconMap2 } from "@tabler/icons-react";
 
+// eslint-disable-next-line no-undef
 const apiRoot = __API_ROOT__;
 
 export default function GameDetail({ routeParams }) {
   const { token } = useAuth();
-  const { items, error, loading } = useRestApi({
+  const { items, save, error, loading } = useRestApi({
     getUrl: `${apiRoot}/games/${routeParams.joinCode}/details`,
+    putUrl: `${apiRoot}/games/${routeParams.joinCode}`,
     token,
   });
   return (
@@ -32,7 +34,17 @@ export default function GameDetail({ routeParams }) {
       ) : error ? (
         <p>Error: {error.message}</p>
       ) : items && items[0] ? (
-        <GameForm game={items[0]} />
+        <GameForm
+          game={items[0]}
+          onSave={(item) => {
+            save(item, () => {
+              doUpdateUrl(`/games/${item.joinCode}`);
+            });
+          }}
+          onCancel={() => {
+            window.history.back();
+          }}
+        />
       ) : null}
     </div>
   );

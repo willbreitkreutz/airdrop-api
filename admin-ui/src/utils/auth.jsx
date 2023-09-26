@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+// eslint-disable-next-line no-undef
 const apiRoot = __API_ROOT__;
 const cacheKey = "kwnvowehn-token";
 const store = window.localStorage;
@@ -33,10 +34,17 @@ const AuthContext = createContext(defaultState);
 
 function AuthProvider({ children }) {
   const [token, setToken] = useState(defaultState.token);
+  const [err, setErr] = useState("");
 
-  async function login({ username, password }) {
-    const token = await handleLogin({ username, password });
-    setToken(token);
+  function login({ username, password }) {
+    handleLogin({ username, password })
+      .then((token) => {
+        setToken(token);
+      })
+      .catch((error) => {
+        console.log(error);
+        setErr(error.message);
+      });
   }
 
   function logout() {
@@ -59,7 +67,9 @@ function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ login, logout, token, isLoggedIn, roles }}>
+    <AuthContext.Provider
+      value={{ login, logout, err, token, isLoggedIn, roles }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -82,11 +92,11 @@ function handleLogin({ username, password }) {
       },
       body: JSON.stringify({ username, password }),
     })
-      .then((response) => {
+      .then(async (response) => {
         if (response.ok) {
           return response.json();
         } else {
-          throw new Error("Login failed");
+          throw new Error(`${await response.text()}`);
         }
       })
       .then((data) => {
@@ -99,4 +109,5 @@ function handleLogin({ username, password }) {
   });
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export { AuthProvider, useAuth };

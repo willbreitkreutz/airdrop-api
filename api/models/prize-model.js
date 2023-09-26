@@ -1,16 +1,46 @@
-import { all } from "../utils/db.js";
+import { all, get, run } from "../utils/db.js";
 
-function listPrizes() {
-  return all(
+function prizeToGeoJSON(prize) {
+  return {
+    type: "Feature",
+    geometry: {
+      type: "Point",
+      coordinates: [prize.x, prize.y],
+    },
+    properties: {
+      id: prize.id,
+      maxValue: prize.max_value,
+      startTime: prize.start_time,
+      duration: prize.duration,
+    },
+  };
+}
+
+function createPrize({ gameId, startTime, duration, maxValue, x, y }) {
+  return run(
+    `INSERT INTO prizes (game_id, start_time, duration, max_value, x, y) VALUES (?, ?, ?, ?, ?, ?)`,
+    [gameId, startTime, duration, maxValue, x, y]
+  );
+}
+
+async function getActivePrizes(joinCode) {
+  const now = new Date();
+  const prizes = await all(
     `SELECT * FROM prizes p
       LEFT JOIN games g on p.game_id = g.id
-      WHERE g.joinCode = ?`,
-    joinCode
+      WHERE g.join_code = ? and p.claimed_by is null and (? - p.start_time) < duration`,
+    [joinCode, now]
   );
+  return prizes.map(prizeToGeoJSON);
 }
 
 function getPrize(prizeId) {
   return get(`SELECT * FROM prizes WHERE id = ?`, prizeId);
+}
+
+async function getPrizeGeoJSON(prizeId) {
+  const prize = await getPrize(prizeId);
+  return prizeToGeoJSON(prize);
 }
 
 function updatePrize(user, prizeId, prizeValue) {
@@ -20,4 +50,4 @@ function updatePrize(user, prizeId, prizeValue) {
   );
 }
 
-export { getPrize, listPrizes, updatePrize };
+export { createPrize, getPrize, getPrizeGeoJSON, getActivePrizes, updatePrize };

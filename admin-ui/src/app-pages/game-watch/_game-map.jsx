@@ -91,6 +91,8 @@ const map = new Map({
 function prizeHandler(prize) {
   // center of prize area
   const feature = new GeoJSON().readFeature(prize);
+  // constant timestep for prize area expansion
+  const dt = 1;
   // prizeLayer.getSource().addFeature(feature);
   // prize area, expands over time
   const prizeAreaFeature = new Feature();
@@ -102,10 +104,11 @@ function prizeHandler(prize) {
   prizeAreaFeature.set(
     "timer",
     window.setInterval(() => {
-      const t = prizeAreaFeature.get("t") + 1;
+      const t = prizeAreaFeature.get("t") + dt;
       const maxT = prizeAreaFeature.get("maxT");
       if (t > maxT) {
         window.clearInterval(prizeAreaFeature.get("timer"));
+        prizeAreaLayer.getSource().removeFeature(prizeAreaFeature);
         return;
       }
       const pctT = Math.ceil((t / maxT) * 100);
@@ -126,7 +129,7 @@ function prizeHandler(prize) {
         .getStyle()(prizeAreaFeature)
         .getText();
       prizeAreaLabel.setText(`${value} pts`);
-    }, 1000)
+    }, dt * 1000)
   );
   prizeAreaLayer.getSource().addFeature(prizeAreaFeature);
 }
@@ -142,6 +145,7 @@ export default function GameMap({ game }) {
     console.log(boundary);
     boundaryLayer.getSource().addFeatures(boundary);
     map.getView().fit(boundaryLayer.getSource().getExtent());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapRef.current]);
 
   return <div id="map" ref={mapRef}></div>;

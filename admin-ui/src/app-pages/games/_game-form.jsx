@@ -93,6 +93,7 @@ export default function GameForm({ game = {}, onSave, onCancel }) {
         <NumberInput
           mt="md"
           label="Prize Max Value"
+          description="Value starts here and goes to 0 by the end of the prize duration"
           placeholder="Prize Max Value"
           disabled={false}
           {...form.getInputProps("prizeMaxValue")}
@@ -100,6 +101,7 @@ export default function GameForm({ game = {}, onSave, onCancel }) {
         <NumberInput
           mt="md"
           label="Prize Duration"
+          description="Duration in seconds"
           placeholder="Prize Duration"
           disabled={false}
           {...form.getInputProps("prizeDuration")}
