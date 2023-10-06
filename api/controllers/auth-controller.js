@@ -31,6 +31,8 @@ function authenticate(role) {
 
 async function selectOrCreateUser(req, res, next) {
   const { username, password } = req.body;
+  if (!username || !password)
+    return res.status(400).send("Username and password required");
   const existingUser = await userModel.getUserByUsername(username);
   if (existingUser) {
     const match = await compare(password, existingUser.password);
