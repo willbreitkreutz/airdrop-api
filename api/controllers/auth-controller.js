@@ -1,6 +1,7 @@
 import { compare, hash, tokenForUser, verify } from "../utils/auth.js";
 import * as userModel from "../models/user-model.js";
 import * as connectionModel from "../models/connection-model.js";
+import cacheAvatar from "../utils/cache-avatar.js";
 
 function authenticate(role) {
   return function (req, _, next) {
@@ -30,7 +31,7 @@ function authenticate(role) {
 }
 
 async function selectOrCreateUser(req, res, next) {
-  const { username, password } = req.body;
+  const { username, password, avatar } = req.body;
   if (!username || !password)
     return res.status(400).send("Username and password required");
   const existingUser = await userModel.getUserByUsername(username);
@@ -41,18 +42,19 @@ async function selectOrCreateUser(req, res, next) {
       req.user = existingUser;
       next();
     } else {
-      res.status(401).send("Login failed");
+      return res.status(401).send("Login failed");
     }
   } else {
-    if (!password || !username) {
-      res.status(400).send("Username and password required");
+    if (!password || !username || !avatar) {
+      return res.status(400).send("Username, password and avatar required");
     }
     if (password.length < 8) {
-      res.status(400).send("Password must be at least 8 characters");
+      return res.status(400).send("Password must be at least 8 characters");
     }
     const hashed = await hash(password);
-    const newUser = await userModel.createUser(username, hashed);
+    const newUser = await userModel.createUser(username, hashed, avatar);
     delete newUser.password;
+    await cacheAvatar(username, avatar);
     req.user = newUser;
     next();
   }
@@ -82,7 +84,7 @@ async function issueWsToken(req, res) {
   res.status(200).json({ wsToken, str });
 }
 
-async function verifyWsToken(req, res, next) {
+async function verifyWsToken(req, _, next) {
   const { channel, wsToken } = req.query;
   const connection = await connectionModel.getConnection(wsToken);
   const verifyString = `${connection?.user_id}-${channel}`;
@@ -93,10 +95,10 @@ async function verifyWsToken(req, res, next) {
       req.user = await userModel.getUserById(connection.user_id);
       next();
     } else {
-      res.status(406).json({ verified: false, message: "Already connected" });
+      next({ status: 406, verified: false, message: "Already connected" });
     }
   } else {
-    res.status(401).json({ verified: false });
+    next({ status: 401, verified: false, message: "Bad Request" });
   }
 }
 

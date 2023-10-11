@@ -9,6 +9,7 @@ db.serialize(() => {
       id INTEGER PRIMARY KEY AUTOINCREMENT, 
       username TEXT, 
       password TEXT, 
+      avatar TEXT,
       roles TEXT, 
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`
   );

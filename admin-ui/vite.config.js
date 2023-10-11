@@ -24,6 +24,9 @@ export default defineConfig(({ command, mode }) => {
     };
   } else {
     return {
+      server: {
+        port: 5174,
+      },
       define: {
         __APP_NAME__: `"${pkg.name}"`,
         __APP_VERSION__: `"${pkg.version}"`,

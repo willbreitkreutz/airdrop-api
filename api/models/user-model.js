@@ -9,22 +9,24 @@ function addUserToGame(gameId, user) {
   ]);
 }
 
-async function createUser(username, hashed) {
+async function createUser(username, hashed, avatar) {
   return get(
-    `INSERT INTO users (username, password, roles) VALUES (?, ?, ?) RETURNING id, username, roles`,
-    [username, hashed, "PLAYER"]
+    `INSERT INTO users (username, password, roles, avatar) VALUES (?, ?, ?, ?) RETURNING id, username, roles, avatar`,
+    [username, hashed, "PLAYER", avatar]
   );
 }
 
 function getUserByUsername(username) {
   return get(
-    `SELECT id, username, password, roles FROM users WHERE username = ?`,
+    `SELECT id, username, password, roles, avatar FROM users WHERE username = ?`,
     [username]
   );
 }
 
 function getUserById(id) {
-  return get(`SELECT id, username, roles FROM users WHERE id = ?`, [id]);
+  return get(`SELECT id, username, roles, avatar FROM users WHERE id = ?`, [
+    id,
+  ]);
 }
 
 function getUserLastLocation(userId) {
@@ -52,7 +54,7 @@ function joinGame(joinCode, user) {
 }
 
 function listUsers() {
-  return all(`SELECT id, username, roles FROM users`, []);
+  return all(`SELECT id, username, roles, avatar FROM users`, []);
 }
 
 function setUserLastLocation(userId, location) {

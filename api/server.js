@@ -20,6 +20,14 @@ app.use((req, _, next) => {
 
 app.use("/auth", authRoutes);
 app.use("/games", gameRoutes);
+app.use("/avatars", express.static("api/avatars"));
+
+app.use((err, _, res, next) => {
+  console.error(err);
+  const status = err.status || 500;
+  const message = err.message || "Something went wrong";
+  res.status(status).json({ status, message });
+});
 
 function startup() {
   const server = app.listen(env.HTTP_PORT);
