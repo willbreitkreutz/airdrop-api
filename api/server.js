@@ -27,9 +27,9 @@ app.use("/games", gameRoutes);
 
 // because we are running dev mode inside a sub folder
 // we need to prepend that folders name to the static path
-const staticPath = env.NODE_ENV === "production" ? "" : "api";
-app.use("/avatars", express.static(`${staticPath}/avatars`));
-app.use("/admin", express.static(`${staticPath}/dist`));
+const staticPath = env.NODE_ENV === "production" ? "" : "api/";
+app.use("/avatars", express.static(`${staticPath}avatars`));
+app.use("/admin", express.static(`${staticPath}dist`));
 
 app.use((err, _, res, next) => {
   console.error(err);

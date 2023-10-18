@@ -7,6 +7,7 @@ export default defineConfig(({ command, mode }) => {
   if (command === "build" && mode === "production") {
     const homepage = "https://airdrop.rsgis.dev/admin";
     return {
+      base: `${homepage}/`,
       server: {
         host: true,
         origin: `${homepage}`,

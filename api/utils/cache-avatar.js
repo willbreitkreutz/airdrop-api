@@ -17,7 +17,8 @@ function getImage(url, filename) {
 }
 
 export default async function cacheAvatar(username, avatar) {
-  const path = `api/avatars/${username}.png`;
+  const staticPath = env.NODE_ENV === "production" ? "" : "api/";
+  const path = `${staticPath}avatars/${username}.png`;
   await getImage(
     `https://www.avatarsinpixels.com/minipix/${avatar}/2/show.png`,
     path

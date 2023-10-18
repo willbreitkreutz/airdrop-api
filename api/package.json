@@ -1,6 +1,6 @@
 {
   "name": "airdrop-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Back-end for the airdrop game used to demo open layers game dev for the FOSS4G-NA conference in 2023",
   "main": "server.js",
