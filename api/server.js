@@ -18,9 +18,18 @@ app.use((req, _, next) => {
   next();
 });
 
+app.use("/health", (_, res) => {
+  res.json({ status: "ok" });
+});
+
 app.use("/auth", authRoutes);
 app.use("/games", gameRoutes);
-app.use("/avatars", express.static("api/avatars"));
+
+// because we are running dev mode inside a sub folder
+// we need to prepend that folders name to the static path
+const staticPath = env.NODE_ENV === "production" ? "" : "api";
+app.use("/avatars", express.static(`${staticPath}/avatars`));
+app.use("/admin", express.static(`${staticPath}/dist`));
 
 app.use((err, _, res, next) => {
   console.error(err);
@@ -43,6 +52,7 @@ function startup() {
   connectSocketServer(server);
   startActiveGames();
 
+  console.log(`Starting up in ${env.NODE_ENV} mode`);
   console.log(`Airdrop-API listening on ${env.HTTP_PORT}`);
 }
 

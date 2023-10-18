@@ -1,4 +1,4 @@
-import { get } from "../utils/db.js";
+import { get, all, run } from "../utils/db.js";
 
 function getUserLeaderboardInfo(joinCode, userId) {
   return get(
@@ -11,7 +11,7 @@ function getUserLeaderboardInfo(joinCode, userId) {
 
 function getLeaderboard(joinCode) {
   return all(
-    `SELECT u.username, gu.score, gu.last_location FROM games_users gu
+    `SELECT u.username, gu.score, gu.last_location as position FROM games_users gu
      LEFT JOIN users u on gu.user_id = u.id
      LEFT JOIN games g on gu.game_id = g.id
      WHERE g.join_code = ? ORDER BY score DESC`,

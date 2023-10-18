@@ -5,7 +5,7 @@ import pkg from "./package.json";
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
   if (command === "build" && mode === "production") {
-    const homepage = "https://icejam.rsgis.dev";
+    const homepage = "https://airdrop.rsgis.dev/admin";
     return {
       server: {
         host: true,
@@ -14,11 +14,7 @@ export default defineConfig(({ command, mode }) => {
       define: {
         __APP_NAME__: `"${pkg.name}"`,
         __APP_VERSION__: `"${pkg.version}"`,
-        __HOMEPAGE__: `"${homepage}"`,
-        __API_ROOT__: `"${homepage}/api/v1"`,
-        __AUTH_ROOT__: `"https://identityc-test.cwbi.us/auth"`,
-        __AUTH_REALM__: `"cwbi"`,
-        __AUTH_CLIENT_ID__: `"icejam"`,
+        __API_ROOT__: `"https://airdrop.rsgis.dev"`,
       },
       plugins: [react()],
     };

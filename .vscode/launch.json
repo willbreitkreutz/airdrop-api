@@ -8,11 +8,10 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/api/server.js",
       "env": {
+        "NODE_ENV": "development",
         "HTTP_PORT": "3000",
         "AUTH_SECRET": "4g7qHi4UjR2UYF187y3MbY7r"
       }

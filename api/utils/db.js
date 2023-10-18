@@ -1,17 +1,26 @@
 import sqlite3 from "sqlite3";
 const db = new sqlite3.Database("database.db");
 
+const adminUser = {
+  username: process.env.ADMIN_USERNAME || "admin",
+  password: process.env.ADMIN_PASSWORD || "admin",
+  roles: "PLAYER,ADMIN",
+};
+
 // if the database is new scaffold out our connections table to track websocket connections
 db.serialize(() => {
   // users table
   db.run(
     `CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT, 
-      username TEXT, 
-      password TEXT, 
+      username TEXT NOT NULL UNIQUE, 
+      password TEXT NOT NULL, 
       avatar TEXT,
       roles TEXT, 
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`
+  );
+  db.run(
+    `INSERT OR IGNORE INTO users (username, password, roles) VALUES ('${adminUser.username}', '${adminUser.password}', '${adminUser.roles}')`
   );
   // connections table
   db.run(

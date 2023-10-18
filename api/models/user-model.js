@@ -5,7 +5,7 @@ import { getUserLeaderboardInfo } from "./leaderboard-model.js";
 function addUserToGame(gameId, user) {
   return run(`INSERT INTO games_users (game_id, user_id) VALUES (?, ?)`, [
     gameId,
-    user.sub,
+    user.id,
   ]);
 }
 
@@ -30,21 +30,24 @@ function getUserById(id) {
 }
 
 function getUserLastLocation(userId) {
-  return get(`SELECT last_location FROM games_users WHERE user_id = ?`, userId);
+  return get(
+    `SELECT last_location as position FROM games_users WHERE user_id = ?`,
+    userId
+  );
 }
 
 function joinGame(joinCode, user) {
   return new Promise(async (resolve, reject) => {
     try {
-      const gameId = await getGameIdFromJoinCode(joinCode);
+      const game = await getGameIdFromJoinCode(joinCode);
       const userLeaderboardInfo = await getUserLeaderboardInfo(
         joinCode,
-        user.sub
+        user.id
       );
       if (userLeaderboardInfo) {
         resolve();
       } else {
-        await addUserToGame(gameId, user);
+        await addUserToGame(game.id, user);
         resolve();
       }
     } catch (err) {

@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useAuth } from "../../utils/auth";
 import { useRestApi } from "../../hooks/useRestApi";
 import {
@@ -10,10 +9,10 @@ import {
   Grid,
   ScrollArea,
 } from "@mantine/core";
+// eslint-disable-next-line no-undef
 const apiRoot = __API_ROOT__;
 
 function UserCard({ user, saveUser }) {
-  // const [isAdmin, setIsAdmin] = useState(user.roles.includes("ADMIN"));
   let isAdmin = user.roles.includes("ADMIN");
   const handleChange = (e) => {
     isAdmin = e.target.checked;
@@ -30,7 +29,7 @@ function UserCard({ user, saveUser }) {
     <Paper shadow="xs" p="xs">
       <Grid justify="space-around" align="center">
         <Grid.Col span={2}>
-          <Avatar radius="xl" />
+          <Avatar radius="xl" src={`${apiRoot}/avatars/${user.username}.png`} />
         </Grid.Col>
         <Grid.Col span={4}>
           <h3>{user.username}</h3>

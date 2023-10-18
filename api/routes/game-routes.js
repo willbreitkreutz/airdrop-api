@@ -15,7 +15,7 @@ router.get("/", authenticate("PLAYER"), listGames);
 router.post("/", authenticate("ADMIN"), createGame);
 router.put("/:joinCode", authenticate("ADMIN"), updateGame);
 router.get("/:joinCode/details", authenticate("PLAYER"), getGameDetails);
-router.get("/:joinCode/leaderboard", authenticate("PLAYER"), getLeaderboard);
+router.get("/:joinCode/players", authenticate("PLAYER"), getLeaderboard);
 router.get("/:joinCode/prizes", authenticate("PLAYER"), getActivePrizes);
 router.post(
   "/:joinCode/prize/:prizeId/claim",

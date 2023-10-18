@@ -1,0 +1,10 @@
+version: '2'
+services:
+  airdrop-api:
+    image: willbreitkreutz/airdrop-api:latest
+    environment:
+      - NODE_ENV=production
+      - HTTP_PORT=3005
+      - AUTH_SECRET=4g7qHi4UjR2UYF187y3MbY7r
+    ports:
+      - 3005:3005

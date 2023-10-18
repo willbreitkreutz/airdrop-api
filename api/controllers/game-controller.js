@@ -32,7 +32,7 @@ async function claimPrize(req, res) {
       if (lastLocationRow) {
         const userPoint = {
           type: "Point",
-          coordinates: JSON.parse(lastLocationRow.last_location),
+          coordinates: JSON.parse(lastLocationRow.position),
         };
         if (turf.booleanPointInPolygon(userPoint, prizePolygon)) {
           await prizeModel.updatePrize(user, prizeId, prizeValue);

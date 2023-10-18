@@ -15,13 +15,18 @@ async function userMsgHandler(channel, data, user, ws) {
         broadcast(channel, message.payload);
         break;
       case "LOCATION_UPDATE":
-        await setUserLastLocation(
-          user.sub,
-          message?.payload?.position?.join(",")
-        );
-        broadcastExceptSender(
+        if (!message?.payload?.position?.length) return;
+        await setUserLastLocation(user.id, message.payload.position.join(","));
+        // broadcastExceptSender(
+        broadcast(
           channel,
-          JSON.stringify({ type: "USER_LOCATION_UPDATE", payload: message }),
+          JSON.stringify({
+            type: "USER_LOCATION_UPDATE",
+            payload: {
+              username: user.username,
+              position: message.payload.position,
+            },
+          }),
           ws
         );
         break;
