@@ -19,7 +19,7 @@ app.use((req, _, next) => {
 });
 
 app.use("/health", (_, res) => {
-  res.json({ status: "ok" });
+  res.status(200).json({ status: "healthy" });
 });
 
 app.use("/auth", authRoutes);
