@@ -1,9 +1,12 @@
 import sqlite3 from "sqlite3";
-const db = new sqlite3.Database("database.db");
+import { hashSync } from "./auth.js";
+
+const staticPath = process.env.STATIC_PATH || "";
+const db = new sqlite3.Database(`${staticPath}database/airdrop-db.db`);
 
 const adminUser = {
   username: process.env.ADMIN_USERNAME || "admin",
-  password: process.env.ADMIN_PASSWORD || "admin",
+  password: hashSync(process.env.ADMIN_PASSWORD || "password"),
   roles: "PLAYER,ADMIN",
 };
 
@@ -72,6 +75,7 @@ db.serialize(() => {
       claimed_value INTEGER,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`
   );
+  console.log("Scaffold complete");
 });
 
 function get(sql, params) {

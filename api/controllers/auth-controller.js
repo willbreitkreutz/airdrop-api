@@ -48,8 +48,8 @@ async function selectOrCreateUser(req, res, next) {
     if (!password || !username || !avatar) {
       return res.status(400).send("Username, password and avatar required");
     }
-    if (password.length < 8) {
-      return res.status(400).send("Password must be at least 8 characters");
+    if (password.length < 6) {
+      return res.status(400).send("Password must be at least 6 characters");
     }
     const hashed = await hash(password);
     const newUser = await userModel.createUser(username, hashed, avatar);

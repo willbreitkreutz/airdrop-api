@@ -9,5 +9,11 @@ export default function Home() {
   useEffect(() => {
     if (isLoggedIn) console.log("logged in");
   }, [isLoggedIn]);
+  useEffect(() => {
+    console.log("rendering home");
+    return () => {
+      console.log("unmounting home");
+    };
+  });
   return <div>{isLoggedIn ? <Welcome /> : <LoginForm />}</div>;
 }

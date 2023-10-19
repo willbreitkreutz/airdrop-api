@@ -8,6 +8,10 @@ async function hash(data) {
   return hash;
 }
 
+function hashSync(data) {
+  return bcrypt.hashSync(data, 12);
+}
+
 async function compare(data, hash) {
   return await bcrypt.compare(data, hash);
 }
@@ -27,4 +31,4 @@ function tokenForUser(user, cb) {
   );
 }
 
-export { hash, compare, verify, tokenForUser };
+export { hash, hashSync, compare, verify, tokenForUser };

@@ -1,6 +1,7 @@
 import { useForm } from "@mantine/form";
 import { Box, Button, Group, TextInput } from "@mantine/core";
 import { useAuth } from "../../utils/auth";
+import { useEffect } from "react";
 
 export default function LoginForm() {
   const { login, err } = useAuth();
@@ -10,6 +11,14 @@ export default function LoginForm() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    console.log("rendering login form");
+    return () => {
+      console.log("unmounting login form");
+    };
+  }, []);
+
   return (
     <Box maw={320} mx="auto">
       <form

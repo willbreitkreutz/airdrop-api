@@ -14,7 +14,9 @@ export default function useRouter() {
 
   function handleRouteChange() {
     const path = window.location.href;
+    console.log("path", path);
     const newRoute = routes(path);
+    console.log("newRoute", newRoute);
     setRoute(newRoute);
   }
 

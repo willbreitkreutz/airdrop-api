@@ -6,5 +6,6 @@ services:
       - NODE_ENV=production
       - HTTP_PORT=3005
       - AUTH_SECRET=4g7qHi4UjR2UYF187y3MbY7r
+      - ADMIN_PASSWORD=some_password_here
     ports:
       - 3005:3005
