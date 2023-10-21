@@ -5,6 +5,7 @@ import { ActionIcon, Group } from "@mantine/core";
 import { IconPacman } from "@tabler/icons-react";
 import GameMap from "./_game-map";
 
+// eslint-disable-next-line no-undef
 const apiRoot = __API_ROOT__;
 
 export default function GameWatch({ routeParams }) {

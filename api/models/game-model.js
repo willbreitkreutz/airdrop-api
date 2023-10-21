@@ -5,7 +5,7 @@ async function createGame(props) {
   const start = new Date(props.startTime);
   const end = new Date(props.endTime);
   const newId = await run(
-    `INSERT INTO games (join_code, name, geometry, bbox, start_time, end_time, prize_count, prize_max_value, prize_duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO games (join_code, name, geometry, bbox, start_time, end_time, prize_count, prize_max_value, prize_duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) returning id`,
     [
       Math.random().toString(36).substring(2, 6).toUpperCase(),
       props.name,

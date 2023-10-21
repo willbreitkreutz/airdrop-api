@@ -8,11 +8,12 @@ import {
   Paper,
   Grid,
   ScrollArea,
+  Button,
 } from "@mantine/core";
 // eslint-disable-next-line no-undef
 const apiRoot = __API_ROOT__;
 
-function UserCard({ user, saveUser }) {
+function UserCard({ user, saveUser, removeUser }) {
   let isAdmin = user.roles.includes("ADMIN");
   const handleChange = (e) => {
     isAdmin = e.target.checked;
@@ -34,13 +35,26 @@ function UserCard({ user, saveUser }) {
         <Grid.Col span={4}>
           <h3>{user.username}</h3>
         </Grid.Col>
-        <Grid.Col span={6}>
+        <Grid.Col span={3}>
           <Switch
             label="Admin"
             checked={isAdmin}
             onChange={handleChange}
             color="pink"
           />
+        </Grid.Col>
+        <Grid.Col span={3}>
+          <Button
+            variant="filled"
+            color="red"
+            size="xs"
+            onClick={() => {
+              removeUser(user);
+            }}
+          >
+            {" "}
+            Delete{" "}
+          </Button>
         </Grid.Col>
       </Grid>
     </Paper>
@@ -49,9 +63,10 @@ function UserCard({ user, saveUser }) {
 
 export default function Users() {
   const { token } = useAuth();
-  const { items, save, loading } = useRestApi({
+  const { items, save, remove, loading } = useRestApi({
     getUrl: `${apiRoot}/auth/users`,
     putUrl: `${apiRoot}/auth/update`,
+    deleteUrl: `${apiRoot}/auth/users/`,
     token,
     staleAfter: 1 * 60 * 1000,
   });
@@ -64,7 +79,14 @@ export default function Users() {
         <Stack>
           {items &&
             items.map((item, i) => {
-              return <UserCard key={i} user={item} saveUser={save} />;
+              return (
+                <UserCard
+                  key={i}
+                  user={item}
+                  saveUser={save}
+                  removeUser={remove}
+                />
+              );
             })}
         </Stack>
       </ScrollArea.Autosize>

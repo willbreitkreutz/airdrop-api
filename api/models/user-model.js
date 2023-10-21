@@ -74,6 +74,10 @@ function updateUserRoles(id, roles) {
   );
 }
 
+function deleteUser(id) {
+  return run(`DELETE FROM users WHERE id = ?`, [id]);
+}
+
 export {
   addUserToGame,
   createUser,
@@ -84,4 +88,5 @@ export {
   listUsers,
   setUserLastLocation,
   updateUserRoles,
+  deleteUser,
 };

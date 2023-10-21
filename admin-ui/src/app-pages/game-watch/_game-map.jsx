@@ -2,12 +2,11 @@ import { useEffect, useRef } from "react";
 import { useGameConnection } from "../../hooks/useGameConnection";
 import * as olProj from "ol/proj";
 import Map from "ol/Map.js";
-import OSM from "ol/source/OSM.js";
 import TileLayer from "ol/layer/Tile.js";
 import View from "ol/View.js";
 import GeoJSON from "ol/format/GeoJSON.js";
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from "ol/style.js";
-import { Vector as VectorSource } from "ol/source.js";
+import { Vector as VectorSource, XYZ } from "ol/source.js";
 import { Vector as VectorLayer } from "ol/layer.js";
 import Feature from "ol/Feature.js";
 import circle from "@turf/circle";
@@ -76,7 +75,9 @@ const prizeLayer = new VectorLayer({
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new OSM(),
+      source: new XYZ({
+        url: "https://cartodb-basemaps-{a-c}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png",
+      }),
     }),
     boundaryLayer,
     prizeAreaLayer,

@@ -18,6 +18,8 @@ import {
 } from "@tabler/icons-react";
 import { format } from "date-fns";
 import { doUpdateUrl } from "../../utils/nav-helper";
+
+// eslint-disable-next-line no-undef
 const apiRoot = __API_ROOT__;
 
 function GameListItem({ game }) {
@@ -86,7 +88,7 @@ function GameListItem({ game }) {
 
 export default function Games() {
   const { token } = useAuth();
-  const { items, error, loading } = useRestApi({
+  const { items, loading } = useRestApi({
     getUrl: `${apiRoot}/games`,
     token,
   });
@@ -97,7 +99,7 @@ export default function Games() {
         <h1>Games</h1>
         <ActionIcon
           onClick={() => {
-            doUpdateUrl("/games/new");
+            doUpdateUrl(`/games/new`);
           }}
           variant="filled"
           color="primary"

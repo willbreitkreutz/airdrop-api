@@ -17,8 +17,8 @@ export default function GameForm({ game = {}, onSave, onCancel }) {
       joinCode: game.join_code || "",
       name: game.name || "",
       geom: game.geometry || "",
-      startTime: game.start_time ? new Date(game.start_time) : "",
-      endTime: game.end_time ? new Date(game.end_time) : "",
+      startTime: game.start_time ? new Date(game.start_time) : new Date(),
+      endTime: game.end_time ? new Date(game.end_time) : new Date(),
       prizeCount: game.prize_count || 100,
       prizeMaxValue: game.prize_max_value || 100,
       prizeDuration: game.prize_duration || 100,
@@ -73,6 +73,7 @@ export default function GameForm({ game = {}, onSave, onCancel }) {
           mt="md"
           label="Start Time"
           placeholder="Start Time"
+          defaultDate={new Date()}
           disabled={false}
           {...form.getInputProps("startTime")}
         />
@@ -80,6 +81,7 @@ export default function GameForm({ game = {}, onSave, onCancel }) {
           mt="md"
           label="End Time"
           placeholder="End Time"
+          defaultDate={new Date()}
           disabled={false}
           {...form.getInputProps("endTime")}
         />

@@ -30,6 +30,10 @@ async function onConnection(ws, req, user) {
   ws.on("close", function close() {
     deleteConnection(user.id, channel);
     channels[channel] = channels[channel].filter((w) => w !== ws);
+    broadcast({
+      type: "USER_DISCONNECTED",
+      payload: `User ${user.username} disconnected`,
+    });
     console.log(`User ${user.username} disconnected`);
   });
   if (channel) {
@@ -52,6 +56,7 @@ async function onConnection(ws, req, user) {
       }),
       ws
     );
+    console.log(`User ${user.username} connected to channel ${channel}`);
   }
 }
 

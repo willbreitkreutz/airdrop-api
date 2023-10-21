@@ -22,6 +22,7 @@ db.serialize(() => {
       roles TEXT, 
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`
   );
+  console.log("trying to create admin user");
   db.run(
     `INSERT OR IGNORE INTO users (username, password, roles) VALUES ('${adminUser.username}', '${adminUser.password}', '${adminUser.roles}')`
   );

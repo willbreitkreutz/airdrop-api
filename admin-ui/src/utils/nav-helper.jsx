@@ -3,8 +3,13 @@ import { useAuth } from "./auth";
 
 // eslint-disable-next-line no-undef
 const homepage = __HOMEPAGE__;
+const basePath = window.location.href.replace(homepage, "");
 
-function doUpdateUrl(url, state = {}) {
+console.log("homepage", homepage);
+console.log("basePath", basePath);
+
+function doUpdateUrl(path, state = {}) {
+  const url = homepage + path;
   window.history.pushState(state, "", url);
   var popStateEvent = new PopStateEvent("popstate", { state: state });
   dispatchEvent(popStateEvent);
@@ -13,11 +18,11 @@ function doUpdateUrl(url, state = {}) {
 export default function NavHelper({ children }) {
   const { isLoggedIn } = useAuth();
   if (!isLoggedIn) {
-    console.log(window.location.toString(), homepage);
-    if (window.location.toString() !== homepage) {
+    const path = window.location.href.replace(homepage, "");
+    if (path !== basePath) {
       // weird race condition between this call and the router setting up it's listener
       setTimeout(() => {
-        doUpdateUrl(homepage);
+        doUpdateUrl("/");
       }, 1);
     }
   }

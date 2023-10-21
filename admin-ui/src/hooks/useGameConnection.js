@@ -9,10 +9,6 @@ export function useGameConnection(game, onPrize) {
   const { token } = useAuth();
   const [wsToken, setWsToken] = useState(null);
   const [socket, setSocket] = useState(null);
-  const [boundary, setBoundary] = useState(null);
-  const [players, setPlayers] = useState([]);
-  const [prizes, setPrizes] = useState([]);
-  const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
     if (wsToken) return;
@@ -41,7 +37,9 @@ export function useGameConnection(game, onPrize) {
     if (!wsToken) return;
     if (socket) return;
     const s = new WebSocket(
-      `ws://localhost:3000/soc?channel=${game.join_code}&wsToken=${wsToken}`
+      `${apiRoot.replace("http", "ws")}/soc?channel=${
+        game.join_code
+      }&wsToken=${wsToken}`
     );
     s.addEventListener("open", (_) => {
       console.log("Connected to server");
@@ -66,5 +64,15 @@ export function useGameConnection(game, onPrize) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wsToken]);
 
-  return { boundary, players, prizes, leaderboard };
+  useEffect(() => {
+    if (!socket) return;
+    return () => {
+      console.log("Disconnecting from socket");
+      socket.close();
+      setSocket(null);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
+
+  return { socket };
 }

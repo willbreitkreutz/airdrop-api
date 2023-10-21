@@ -14,7 +14,7 @@
         "NODE_ENV": "development",
         "HTTP_PORT": "3000",
         "AUTH_SECRET": "4g7qHi4UjR2UYF187y3MbY7r",
-        "ADMIN_PASSWORD": "$2b$12$zQ7UT2x2LF2lZH9/otiwN.eIpP8Sqtsgz9lP1qfJGdCT8Gwrsj56u",
+        "ADMIN_PASSWORD": "blargh",
         "STATIC_PATH": "api/"
       }
     }

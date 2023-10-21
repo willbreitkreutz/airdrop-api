@@ -5,9 +5,9 @@ import pkg from "./package.json";
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
   if (command === "build" && mode === "production") {
-    const homepage = "https://airdrop.rsgis.dev/admin/";
+    const homepage = "https://airdrop.rsgis.dev/admin";
     return {
-      base: `${homepage}`,
+      base: `${homepage}/`,
       server: {
         host: true,
         origin: `${homepage}`,

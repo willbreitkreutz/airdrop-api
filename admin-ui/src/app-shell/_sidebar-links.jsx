@@ -1,9 +1,4 @@
-import {
-  IconHome,
-  IconColumns,
-  IconPacman,
-  IconUsers,
-} from "@tabler/icons-react";
+import { IconHome, IconPacman, IconUsers } from "@tabler/icons-react";
 import { ThemeIcon, UnstyledButton, Group, Text } from "@mantine/core";
 
 function MainLink({ icon, color, label, href }) {
@@ -43,19 +38,19 @@ const data = [
     icon: <IconHome size="1rem" />,
     color: "blue",
     label: "Home",
-    href: "/",
+    href: `/`,
   },
   {
     icon: <IconPacman size="1rem" />,
     color: "teal",
     label: "Games",
-    href: "/games",
+    href: `/games`,
   },
   {
     icon: <IconUsers size="1rem" />,
     color: "grape",
     label: "Users",
-    href: "/users",
+    href: `/users`,
   },
 ];
 

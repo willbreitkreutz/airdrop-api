@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import routes from "../routes";
 window.routes = routes;
 
+// eslint-disable-next-line no-undef
+const homepage = __HOMEPAGE__;
+const defaultPath = window.location.href.replace(homepage, "");
+
 export default function useRouter() {
-  const [route, setRoute] = useState(routes(window.location.href));
+  const [route, setRoute] = useState(routes(defaultPath));
 
   useEffect(() => {
     window.addEventListener("popstate", handleRouteChange);
@@ -13,10 +17,9 @@ export default function useRouter() {
   }, []);
 
   function handleRouteChange() {
-    const path = window.location.href;
-    console.log("path", path);
+    const href = window.location.href;
+    const path = href.replace(homepage, "");
     const newRoute = routes(path);
-    console.log("newRoute", newRoute);
     setRoute(newRoute);
   }
 

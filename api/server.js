@@ -14,7 +14,7 @@ app.use(cors());
 const env = process.env;
 
 app.use((req, _, next) => {
-  console.log(`${req.method} ${req.url}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
 
@@ -29,8 +29,14 @@ app.use("/games", gameRoutes);
 // we need to prepend that folders name to the static path
 const staticPath = env.STATIC_PATH || "";
 app.use("/avatars", express.static(`${staticPath}avatars`));
-app.use("/admin", express.static(`${staticPath}dist`));
+app.use("/admin", express.static(`${staticPath}dist`, { fallthrough: true }));
+app.use((_, res, next) => {
+  res.sendFile(`${staticPath}dist/index.html`, { root: "." }, (err) => {
+    if (err) next(err);
+  });
+});
 
+// global error handler
 app.use((err, _, res, next) => {
   console.error(err);
   const status = err.status || 500;

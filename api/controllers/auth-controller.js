@@ -42,7 +42,11 @@ async function selectOrCreateUser(req, res, next) {
       req.user = existingUser;
       next();
     } else {
-      return res.status(401).send("Login failed");
+      return res
+        .status(401)
+        .send(
+          `Login failed, ${password} hashed did not match ${existingUser.password}`
+        );
     }
   } else {
     if (!password || !username || !avatar) {
@@ -107,6 +111,12 @@ async function listUsers(req, res) {
   res.status(200).json(users);
 }
 
+async function deleteUser(req, res) {
+  const { id } = req.body;
+  await userModel.deleteUser(id);
+  res.status(200).json({ message: "User deleted" });
+}
+
 export {
   authenticate,
   issueToken,
@@ -115,4 +125,5 @@ export {
   selectOrCreateUser,
   updateUserRoles,
   verifyWsToken,
+  deleteUser,
 };

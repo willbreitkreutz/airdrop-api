@@ -7,9 +7,11 @@ import {
   selectOrCreateUser,
   updateUserRoles,
   listUsers,
+  deleteUser,
 } from "../controllers/auth-controller.js";
 
 router.get("/users", authenticate("ADMIN"), listUsers);
+router.delete("/users", authenticate("ADMIN"), deleteUser);
 router.post("/login", selectOrCreateUser, issueToken);
 router.get("/ws-token", authenticate("PLAYER"), issueWsToken);
 router.get("/verify-token", authenticate("PLAYER"), (req, res) => {

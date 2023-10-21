@@ -6,15 +6,12 @@ import Users from "./app-pages/users/users";
 import NewGame from "./app-pages/game-new/game-new";
 import GameWatch from "./app-pages/game-watch/game-watch";
 
-// eslint-disable-next-line no-undef
-const origin = __HOMEPAGE__;
-
 export default featherRouteMatcher({
-  [`${origin}`]: Home,
-  [`${origin}games`]: Games,
-  [`${origin}games/new`]: NewGame,
-  [`${origin}games/:joinCode`]: GameDetail,
-  [`${origin}games/:joinCode/watch`]: GameWatch,
-  [`${origin}users`]: Users,
+  "/": Home,
+  "/games": Games,
+  "/games/new": NewGame,
+  "/games/:joinCode": GameDetail,
+  "/games/:joinCode/watch": GameWatch,
+  "/users": Users,
   "*": "NotFound",
 });
