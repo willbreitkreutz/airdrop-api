@@ -25,11 +25,12 @@ function createPrize({ gameId, startTime, duration, maxValue, x, y }) {
 
 async function getActivePrizes(joinCode) {
   const now = new Date();
+  console.log(now.getTime());
   const prizes = await all(
-    `SELECT * FROM prizes p
+    `SELECT p.id, p.game_id, p.start_time, p.duration, p.max_value, p.x, p.y FROM prizes p
       LEFT JOIN games g on p.game_id = g.id
-      WHERE g.join_code = ? and p.claimed_by is null and (? - p.start_time) < duration`,
-    [joinCode, now]
+      WHERE g.join_code = ? and p.claimed_by is null and (? - p.start_time) < duration * 1000`,
+    [joinCode, now.getTime()]
   );
   return prizes.map(prizeToGeoJSON);
 }
@@ -46,7 +47,7 @@ async function getPrizeGeoJSON(prizeId) {
 function updatePrize(user, prizeId, prizeValue) {
   return run(
     `UPDATE prizes SET claimed_by = ?, claimed_value = ?, claimed_at = CURRENT_TIMESTAMP WHERE id = ?`,
-    [user.id, prizeValue, prizeId]
+    [user.sub, prizeValue, prizeId]
   );
 }
 

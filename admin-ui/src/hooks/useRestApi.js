@@ -26,6 +26,7 @@ export function useRestApi({
       setItems(JSON.parse(cachedData));
       setAt(new Date(cachedAt));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export function useRestApi({
       store.setItem(`${cacheKey}-items`, JSON.stringify(items));
       store.setItem(`${cacheKey}-at`, new Date());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   useEffect(() => {
@@ -44,6 +46,7 @@ export function useRestApi({
         setAt(null);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [at]);
 
   useEffect(() => {
@@ -52,6 +55,7 @@ export function useRestApi({
       setError(null);
       get();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [at]);
 
   function get() {

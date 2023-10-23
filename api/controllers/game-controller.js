@@ -3,7 +3,7 @@ import * as gameModel from "../models/game-model.js";
 import * as leaderboardModel from "../models/leaderboard-model.js";
 import * as prizeModel from "../models/prize-model.js";
 import * as userModel from "../models/user-model.js";
-import { circle } from "@turf/turf";
+import { circle, booleanWithin } from "@turf/turf";
 
 async function claimPrize(req, res) {
   const user = req.user;
@@ -15,30 +15,52 @@ async function claimPrize(req, res) {
   } else if (prize.claimed_by) {
     res.status(400).send("Prize already claimed");
   } else {
-    const now = new Date();
-    const start = new Date(prize.start_time);
-    if (now - start > prize.duration) {
+    const now = new Date().getTime();
+    const start = new Date(prize.start_time).getTime();
+    const elapsed = now - start;
+    const duration = prize.duration * 1000;
+    if (now - start > duration) {
       res.status(400).send("Prize is no longer valid");
     } else {
-      const pctTimeElapsed = 100 * ((now - start) / prize.duration);
-      const radius = 0.1 * Math.pow(pctTimeElapsed, 2);
+      // calculate percentage of time elapsed
+      const pctT = Math.ceil((elapsed / duration) * 100);
+
+      // calculate new radius based on time elapsed
+      const radius = 1 + 0.1 * Math.pow(pctT, 2);
+
+      // calculate new value based on time elapsed
+      const prizeValue = Math.ceil(
+        prize.max_value * ((100 - 0.01 * Math.pow(pctT, 2)) / 100)
+      );
+
       const prizePolygon = circle([prize.x, prize.y], radius, {
-        steps: 10,
         units: "meters",
       });
-      const prizeValue = Math.floor((radius / 1000) * prize.max_value);
 
-      const lastLocationRow = await userModel.getUserLastLocation(user.id);
+      const lastLocationRow = await userModel.getUserLastLocation(user.sub);
       if (lastLocationRow) {
         const userPoint = {
           type: "Point",
-          coordinates: JSON.parse(lastLocationRow.position),
+          coordinates: lastLocationRow.position.split(",").map(Number),
         };
-        if (turf.booleanPointInPolygon(userPoint, prizePolygon)) {
+        if (booleanWithin(userPoint, prizePolygon)) {
           await prizeModel.updatePrize(user, prizeId, prizeValue);
           await leaderboardModel.updateLeaderboard(user, prizeValue);
+          const updatedUserLeaderboardEntry =
+            await leaderboardModel.getUserLeaderboardInfo(joinCode, user.sub);
           res.status(200).send("Prize claimed");
-          broadcast(joinCode, JSON.stringify({ type: "PRIZE_CLAIMED" }));
+          broadcast(
+            joinCode,
+            JSON.stringify({
+              type: "PRIZE_CLAIMED",
+              payload: {
+                prizeId: prizeId,
+                username: updatedUserLeaderboardEntry.username,
+                score: updatedUserLeaderboardEntry.score,
+                position: updatedUserLeaderboardEntry.position,
+              },
+            })
+          );
         } else {
           res.status(400).send("User is not in the right place");
         }

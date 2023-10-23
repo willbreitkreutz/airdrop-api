@@ -4,6 +4,7 @@ import {
   returnToSender,
 } from "../utils/soc.js";
 import { setUserLastLocation } from "../models/user-model.js";
+import { getUserLeaderboardInfo } from "../models/leaderboard-model.js";
 
 async function userMsgHandler(channel, data, user, ws) {
   console.log(`Received message ${data} from user ${user.username}`);
@@ -17,14 +18,18 @@ async function userMsgHandler(channel, data, user, ws) {
       case "LOCATION_UPDATE":
         if (!message?.payload?.position?.length) return;
         await setUserLastLocation(user.id, message.payload.position.join(","));
-        // broadcastExceptSender(
+        const updatedUserLeaderboardEntry = await getUserLeaderboardInfo(
+          channel,
+          user.id
+        );
         broadcast(
           channel,
           JSON.stringify({
             type: "USER_LOCATION_UPDATE",
             payload: {
-              username: user.username,
-              position: message.payload.position,
+              username: updatedUserLeaderboardEntry.username,
+              score: updatedUserLeaderboardEntry.score,
+              position: updatedUserLeaderboardEntry.position,
             },
           }),
           ws
